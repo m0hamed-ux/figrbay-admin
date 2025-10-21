@@ -368,12 +368,36 @@ app.get("/chats", async (req, res) => {
     const header = req.headers['authorization']
     const token = header && header.split(' ')[1]
     const user = verifyToken(token)
-    const { data, error } = await supabase
+    const baseSelect = "*, annonce(*, annonceur(fullname)), buyer(fullname)"
+
+    const { data: buyerChats, error: buyerError } = await supabase
         .from("chats")
-        .select("*, annonce(*, annonceur(fullname)), buyer(fullname)")
-        .or(`annonce.annonceur.eq.${user.id},buyer.eq.${user.id}`)
-    if (error) return res.status(400).json(error)
-    res.json(data)
+        .select(baseSelect)
+        .eq("buyer", user.id)
+    if (buyerError) return res.status(400).json(buyerError)
+
+    const { data: ownedAnnonces, error: annoncesError } = await supabase
+        .from("annonces")
+        .select("id")
+        .eq("annonceur", user.id)
+    if (annoncesError) return res.status(400).json(annoncesError)
+
+    let sellerChats = []
+    const annonceIds = (ownedAnnonces || []).map(item => item.id)
+    if (annonceIds.length > 0) {
+        const { data: sellerData, error: sellerError } = await supabase
+            .from("chats")
+            .select(baseSelect)
+            .in("annonce", annonceIds)
+        if (sellerError) return res.status(400).json(sellerError)
+        sellerChats = sellerData || []
+    }
+
+    const dedupedChats = new Map()
+    ;(buyerChats || []).forEach(chat => dedupedChats.set(chat.id, chat))
+    sellerChats.forEach(chat => dedupedChats.set(chat.id, chat))
+
+    res.json(Array.from(dedupedChats.values()))
 })
 
 app.get("/messages", async (req, res) => {
