@@ -60,7 +60,7 @@ app.get("/profile", async (req, res) => {
     const user = verifyToken(token)
     const {data, error} = await supabase
         .from("users")
-        .select("fullname, email, tel, location, pic")
+        .select("*")
         .eq("id", user.id)
         .single()
     if (error) return res.status(400).json(error)
