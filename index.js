@@ -1,9 +1,19 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import supabase from './config/supabase.js';
 import {generateToken, verifyToken} from "./config/auth.js"
 
 const app = express();
+
+// Configure CORS
+app.use(cors({
+    origin: '*', // Allow all origins - you can restrict this to specific domains in production
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
+
 app.use(express.json());
 dotenv.config();
 const PORT = process.env.PORT || 3000;
