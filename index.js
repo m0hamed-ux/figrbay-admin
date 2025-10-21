@@ -368,7 +368,7 @@ app.get("/chats", async (req, res) => {
     const header = req.headers['authorization']
     const token = header && header.split(' ')[1]
     const user = verifyToken(token)
-    const baseSelect = "*, annonce(*, annonceur(fullname)), buyer(fullname)"
+    const baseSelect = "*, annonce(*, annonceur(id, fullname, pic, email)), buyer(id, fullname, pic, email)"
 
     const { data: buyerChats, error: buyerError } = await supabase
         .from("chats")
