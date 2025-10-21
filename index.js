@@ -121,8 +121,8 @@ app.post("/updateProfile", async (req, res) => {
                     return res.status(400).json({ error: uploadError.message || uploadError })
                 }
 
-                const publicUrlResp = supabase.storage.from('images').getPublicUrl(filename)
-                const publicUrl = (publicUrlResp?.data?.publicUrl) || (publicUrlResp?.publicURL) || (publicUrlResp?.data?.publicURL)
+                const publicUrlResp = supabase.storage.from('images').getPublicUrl(filename);
+                const publicUrl = publicUrlResp?.data?.publicUrl;
 
                 updatePayload.pic = publicUrl
             }
