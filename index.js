@@ -290,7 +290,7 @@ app.post("/addAnnonce", async (req, res) => {
 app.get("/annonces", async (req, res) => {
     const {data, error} = await supabase
         .from("annonces")
-        .select("*, annonceur(fullname), images(*)")
+        .select("*, annonceur(fullname, tel, location, pic), images(*)")
     if (error) return res.status(400).json(error)
     res.json(data)
 })
