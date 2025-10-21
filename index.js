@@ -285,10 +285,23 @@ app.post("/addAnnonce", async (req, res) => {
     });
 });
 
+
+
 app.get("/annonces", async (req, res) => {
     const {data, error} = await supabase
         .from("annonces")
-        .select("*, annonceur(fullname)")
+        .select("*, annonceur(fullname), images(*)")
+    if (error) return res.status(400).json(error)
+    res.json(data)
+})
+
+app.get("/annonce/:id", async (req, res) => {
+    const { id } = req.params
+    const {data, error} = await supabase
+        .from("annonces")
+        .select("*, annonceur(fullname, tel, location, pic), images(*)")
+        .eq("id", id)
+        .single()
     if (error) return res.status(400).json(error)
     res.json(data)
 })
