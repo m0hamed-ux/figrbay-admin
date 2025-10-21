@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import supabase from './config/supabase.js';
 import {generateToken, verifyToken} from "./config/auth.js"
+import multer from 'multer';
 
 const app = express();
 
@@ -67,9 +68,6 @@ app.get("/profile", async (req, res) => {
 })
 
 app.post("/updateProfile", async (req, res) => {
-    // dynamically import multer so we don't need to change top-level imports
-    const multerMod = await import('multer');
-    const multer = multerMod.default || multerMod;
     const upload = multer({ storage: multer.memoryStorage() }).single('pic');
 
     upload(req, res, async (uploadErr) => {
@@ -143,9 +141,6 @@ app.post("/updateProfile", async (req, res) => {
 
 
 app.post("/addAnnonce", async (req, res) => {
-    // dynamically import multer so we don't need to change top-level imports
-    const multerMod = await import('multer');
-    const multer = multerMod.default || multerMod;
     const upload = multer({ storage: multer.memoryStorage() }).array('images', 10);
 
     upload(req, res, async (uploadErr) => {
