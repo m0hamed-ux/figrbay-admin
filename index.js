@@ -456,6 +456,26 @@ app.get("/orders", async (req, res) => {
     res.json(data)
 })
 
+
+// Admin route to get all annonces
+app.get("/admin/annonces", async (req, res) => {
+    const { data, error } = await supabase
+        .from("annonces")
+        .select("*, annonceur(fullname, tel, location, pic) , images(*)")
+    if (error) return res.status(400).json(error)
+    res.json(data)
+})
+
+// admin route to get all users
+app.get("/admin/users", async (req, res) => {
+    const { data, error } = await supabase
+        .from("users")
+        .select("*")
+    if (error) return res.status(400).json(error)
+    res.json(data)
+})
+
+
 app.listen(PORT, () => {
   console.log(`port : ${PORT}`);
 })
