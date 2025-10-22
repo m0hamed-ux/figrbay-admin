@@ -475,6 +475,28 @@ app.get("/admin/users", async (req, res) => {
     res.json(data)
 })
 
+// remove annonce admin route
+app.post("/admin/deleteAnnonce", async (req, res) => {
+    const { annonceId } = req.body
+    const { data, error } = await supabase
+        .from("annonces")
+        .delete()
+        .eq("id", annonceId)
+    if (error) return res.status(400).json(error)
+    res.json({ message: "done" })
+})
+
+// user announces admin route
+app.get("/admin/userAnnonces/:userId", async (req, res) => {
+    const { userId } = req.params
+    const { data, error } = await supabase
+        .from("annonces")
+        .select("*, annonceur(fullname, tel, location, pic) , images(*)")
+        .eq("annonceur", userId)
+    if (error) return res.status(400).json(error)
+    res.json(data)
+})
+
 
 app.listen(PORT, () => {
   console.log(`port : ${PORT}`);
