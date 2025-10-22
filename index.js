@@ -307,7 +307,7 @@ app.get("/mesannonces", async (req, res) => {
     const user = verifyToken(token)
     const {data, error} = await supabase
         .from("annonces")
-        .select("*, annonceur(fullname, tel, location, pic), images(*)")
+        .select("*, annonceur(fullname, tel, location, pic) , images(*)")
         .eq("annonceur", user.id)
     if (error) return res.status(400).json(error)
     res.json(data)
